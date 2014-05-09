@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns = "http://www.w3.org/ns/widgets" xmlns:gap = "http://phonegap.com/ns/1.0" id = "com.phonegap.helloworld" version = "1.0.0">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0" id="com.phonegap.helloworld" version="0.1.0">
 	<name>Tracker</name>
 	<description>GPS-less position tracker.</description>
 	<author href="https://github.com/71104" email="a71104@gmail.com">Alberto La Rocca</author>

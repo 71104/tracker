@@ -9,17 +9,17 @@
 	<title>Tracker</title>
 </head>
 <body>
-	<div class="app">
-		<h1>PhoneGap</h1>
-		<div id="deviceready" class="blink">
-			<p class="event listening">Connecting to Device</p>
-			<p class="event received">Device is Ready</p>
-		</div>
-	</div>
+	<p>Compass: <span id="compass">-</span></p>
 	<script src="phonegap.js"></script>
-	<script src="js/index.js"></script>
 	<script>
-app.initialize();
+document.addEventListener('deviceready', function () {
+	var compassDisplay = document.geteElementById('compass');
+	navigator.compass.watchHeading(function (heading) {
+		compassDisplay.text = heading;
+	}, function () {
+		compassDisplay.text = 'error';
+	});
+}, false);
 	</script>
 </body>
 </html>
