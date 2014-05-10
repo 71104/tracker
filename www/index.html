@@ -106,12 +106,9 @@ document.addEventListener('deviceready', function () {
 			acceleration.y * acceleration.y + 
 			acceleration.z * acceleration.z
 			) - 9.82;
-		acceleration.x *= h;
-		acceleration.y *= h;
-		acceleration.z *= h;
-		acceleration.x = Math.round(acceleration.x * 100) / 100;
-		acceleration.y = Math.round(acceleration.y * 100) / 100;
-		acceleration.z = Math.round(acceleration.z * 100) / 100;
+		acceleration.x = Math.round(acceleration.x * h * 10) / 10;
+		acceleration.y = Math.round(acceleration.y * h * 10) / 10;
+		acceleration.z = Math.round(acceleration.z * h * 10) / 10;
 		velocity.x += acceleration.x;
 		velocity.y += acceleration.y;
 		velocity.z += acceleration.z;
