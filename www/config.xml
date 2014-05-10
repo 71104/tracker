@@ -70,6 +70,7 @@
 
 	<gap:plugin name="org.apache.cordova.device-orientation"/>
 	<gap:plugin name="org.apache.cordova.device-motion"/>
+	<gap:plugin name="org.apache.cordova.geolocation"/>
 
 	<!--
 		Define access to external domains.

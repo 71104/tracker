@@ -12,13 +12,45 @@
 	<script src="js/bootstrap.min.js"></script>
 </head>
 <body>
-	<p>Compass: <span id="compass">-</span></p>
-	<p>Accelerometer: <pre id="accelerometer">-</pre></p>
+	<div class="panel panel-default">
+		<div class="panel-heading">Geolocation</div>
+		<div class="panel-body">
+			<pre id="geolocation">-</pre>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">Compass</div>
+		<div class="panel-body">
+			<pre id="compass">-</pre>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">Accelerometer</div>
+		<div class="panel-body">
+			<pre id="accelerometer">-</pre>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">Position</div>
+		<div class="panel-body">
+			<pre id="position">-</pre>
+		</div>
+	</div>
 	<script src="phonegap.js"></script>
 	<script>
 document.addEventListener('deviceready', function () {
+	var geolocationDisplay = $('#geolocation');
 	var compassDisplay = $('#compass');
 	var accelerometerDisplay = $('#accelerometer');
+	var positionDisplay = $('#position');
+
+	navigator.geolocation.watchPosition(function (position) {
+		geolocationDisplay.text(JSON.stringify(position));
+	}, function (error) {
+		geolocationDisplay.text('error: ' + JSON.stringify(error));
+	}, {
+		timeout: 1000
+	});
 
 	navigator.compass.watchHeading(function (heading) {
 		compassDisplay.text('' + heading.magneticHeading);
@@ -28,12 +60,38 @@ document.addEventListener('deviceready', function () {
 		frequency: 100
 	});
 
+	var velocity, position;
+
+	function reset() {
+		velocity = {
+			x: 0,
+			y: 0,
+			z: 0
+		};
+		position = {
+			x: 0,
+			y: 0,
+			z: 0
+		};
+	}
+
+	reset();
+
 	navigator.accelerometer.watchAcceleration(function (acceleration) {
+		velocity.x += acceleration.x;
+		velocity.y += acceleration.y;
+		velocity.z += acceleration.z;
+		position.x += velocity.x;
+		position.y += velocity.y;
+		position.z += velocity.z;
 		accelerometerDisplay.text('x: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
+		positionDisplay.text('x: ' + position.x + '\ny: ' + position.y + '\nz: ' + position.z);
 	}, function (error) {
+		reset();
 		accelerometerDisplay.text('error: ' + JSON.stringify(error));
+		positionDisplay.text('error');
 	}, {
-		frequency: 100
+		frequency: 1000
 	});
 }, false);
 	</script>
