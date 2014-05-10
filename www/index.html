@@ -31,6 +31,18 @@
 		</div>
 	</div>
 	<div class="panel panel-default">
+		<div class="panel-heading">Acceleration</div>
+		<div class="panel-body">
+			<pre id="acceleration">-</pre>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">Velocity</div>
+		<div class="panel-body">
+			<pre id="velocity">-</pre>
+		</div>
+	</div>
+	<div class="panel panel-default">
 		<div class="panel-heading">Position</div>
 		<div class="panel-body">
 			<pre id="position">-</pre>
@@ -42,6 +54,8 @@ document.addEventListener('deviceready', function () {
 	var geolocationDisplay = $('#geolocation');
 	var compassDisplay = $('#compass');
 	var accelerometerDisplay = $('#accelerometer');
+	var accelerationDisplay = $('#acceleration');
+	var velocityDisplay = $('#velocity');
 	var positionDisplay = $('#position');
 
 	navigator.geolocation.watchPosition(function (position) {
@@ -91,7 +105,7 @@ document.addEventListener('deviceready', function () {
 			acceleration.x * acceleration.x + 
 			acceleration.y * acceleration.y + 
 			acceleration.z * acceleration.z
-			) - 9.81;
+			) - 9.82;
 		acceleration.x *= h;
 		acceleration.y *= h;
 		acceleration.z *= h;
@@ -101,11 +115,15 @@ document.addEventListener('deviceready', function () {
 		position.x += velocity.x;
 		position.y += velocity.y;
 		position.z += velocity.z;
-		accelerometerDisplay.text('x: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
+		accelerometerDisplay.text('x: ' + newAcceleration.x + '\ny: ' + newAcceleration.y + '\nz: ' + newAcceleration.z);
+		accelerationDisplay.text('x: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
+		velocityDisplay.text('x: ' + velocity.x + '\ny: ' + velocity.y + '\nz: ' + velocity.z);
 		positionDisplay.text('x: ' + position.x + '\ny: ' + position.y + '\nz: ' + position.z);
 	}, function (error) {
 		reset();
 		accelerometerDisplay.text('error: ' + JSON.stringify(error));
+		accelerationDisplay.text('error');
+		velocityDisplay.text('error');
 		positionDisplay.text('error');
 	}, {
 		frequency: 1000
