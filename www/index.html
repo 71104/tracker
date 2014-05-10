@@ -60,9 +60,10 @@ document.addEventListener('deviceready', function () {
 		frequency: 100
 	});
 
-	var velocity, position;
+	var acceleration, velocity, position;
 
 	function reset() {
+		acceleration = null;
 		velocity = {
 			x: 0,
 			y: 0,
@@ -77,7 +78,15 @@ document.addEventListener('deviceready', function () {
 
 	reset();
 
-	navigator.accelerometer.watchAcceleration(function (acceleration) {
+	navigator.accelerometer.watchAcceleration(function (newAcceleration) {
+		if (acceleration) {
+			var dt = newAcceleration.timestamp - acceleration.timestamp;
+			acceleration.x = (newAcceleration.x - acceleration.x) / dt;
+			acceleration.y = (newAcceleration.y - acceleration.y) / dt;
+			acceleration.z = (newAcceleration.z - acceleration.z) / dt;
+		} else {
+			acceleration = newAcceleration;
+		}
 		var h = Math.sqrt(
 			acceleration.x * acceleration.x + 
 			acceleration.y * acceleration.y + 
