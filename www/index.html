@@ -29,7 +29,7 @@ document.addEventListener('deviceready', function () {
 	});
 
 	navigator.accelerometer.watchAcceleration(function (acceleration) {
-		accelerometerDisplay.text('\nx: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
+		accelerometerDisplay.text('x: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
 	}, function (error) {
 		accelerometerDisplay.text('error: ' + JSON.stringify(error));
 	}, {
