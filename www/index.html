@@ -23,7 +23,7 @@ html,body {
 </head>
 <body>
 	<p>Compass: <span id="compass">-</span></p>
-	<p>Accelerometer: <span id="accelerometer">- - -</span></p>
+	<p>Accelerometer: <pre id="accelerometer">-</pre></p>
 	<script src="phonegap.js"></script>
 	<script>
 document.addEventListener('deviceready', function () {
@@ -32,16 +32,16 @@ document.addEventListener('deviceready', function () {
 
 	navigator.compass.watchHeading(function (heading) {
 		compassDisplay.text('' + heading.magneticHeading);
-	}, function () {
-		compassDisplay.text('error');
+	}, function (error) {
+		compassDisplay.text('error: ' + JSON.stringify(error));
 	}, {
 		frequency: 100
 	});
 
 	navigator.accelerometer.watchAcceleration(function (acceleration) {
-		accelerometerDisplay.text(acceleration.x + ' ' + acceleration.y + ' ' + acceleration.z);
-	}, function () {
-		accelerometerDisplay.text('error');
+		accelerometerDisplay.text('\nx: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
+	}, function (error) {
+		accelerometerDisplay.text('error: ' + JSON.stringify(error));
 	}, {
 		frequency: 100
 	});
