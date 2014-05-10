@@ -15,9 +15,9 @@
 document.addEventListener('deviceready', function () {
 	var compassDisplay = document.geteElementById('compass');
 	navigator.compass.watchHeading(function (heading) {
-		compassDisplay.text = heading;
+		compassDisplay.textContent = heading;
 	}, function () {
-		compassDisplay.text = 'error';
+		compassDisplay.textContent = 'error';
 	});
 }, false);
 	</script>
