@@ -13,12 +13,17 @@
 	<script src="phonegap.js"></script>
 	<script>
 document.addEventListener('deviceready', function () {
+	console.log('device ready');
 	var compassDisplay = document.geteElementById('compass');
+	console.dir(compassDisplay);
 	navigator.compass.watchHeading(function (heading) {
+		console.dir(heading);
 		compassDisplay.textContent = heading.magneticHeading;
 	}, function () {
+		console.log('error');
 		compassDisplay.textContent = 'error';
 	});
+	console.log('done');
 }, false);
 	</script>
 </body>
