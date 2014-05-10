@@ -22,23 +22,28 @@ html,body {
 	</style>
 </head>
 <body>
-	<p>Compass: <span id="compass">-</span> <button id="activate-button" class="btn btn-default">Activate</button></p>
+	<p>Compass: <span id="compass">-</span></p>
+	<p>Accelerometer: <span id="accelerometer">- - -</span></p>
 	<script src="phonegap.js"></script>
 	<script>
 document.addEventListener('deviceready', function () {
-	console.log('device ready');
-	$('#activate-button').click(function () {
-		console.log('hello');
-		var compassDisplay = document.getElementById('compass');
-		console.dir(compassDisplay);
-		navigator.compass.watchHeading(function (heading) {
-			console.dir(heading);
-			compassDisplay.textContent = heading.magneticHeading;
-		}, function () {
-			console.log('error');
-			compassDisplay.textContent = 'error';
-		});
-		console.log('done');
+	var compassDisplay = $('#compass');
+	var accelerometerDisplay = $('#accelerometer');
+
+	navigator.compass.watchHeading(function (heading) {
+		compassDisplay.text('' + heading.magneticHeading);
+	}, function () {
+		compassDisplay.text('error');
+	}, {
+		frequency: 100
+	});
+
+	navigator.accelerometer.watchAcceleration(function (acceleration) {
+		accelerometerDisplay.text(acceleration.x + ' ' + acceleration.y + ' ' + acceleration.z);
+	}, function () {
+		accelerometerDisplay.text('error');
+	}, {
+		frequency: 100
 	});
 }, false);
 	</script>
