@@ -78,6 +78,14 @@ document.addEventListener('deviceready', function () {
 	reset();
 
 	navigator.accelerometer.watchAcceleration(function (acceleration) {
+		var h = Math.sqrt(
+			acceleration.x * acceleration.x + 
+			acceleration.y * acceleration.y + 
+			acceleration.z * acceleration.z
+			) - 9.81;
+		acceleration.x *= h;
+		acceleration.y *= h;
+		acceleration.z *= h;
 		velocity.x += acceleration.x;
 		velocity.y += acceleration.y;
 		velocity.z += acceleration.z;
