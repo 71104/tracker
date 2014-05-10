@@ -24,12 +24,16 @@ document.addEventListener('deviceready', function () {
 		compassDisplay.text('' + heading.magneticHeading);
 	}, function (error) {
 		compassDisplay.text('error: ' + JSON.stringify(error));
+	}, {
+		frequency: 100
 	});
 
 	navigator.accelerometer.watchAcceleration(function (acceleration) {
 		accelerometerDisplay.text('x: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
 	}, function (error) {
 		accelerometerDisplay.text('error: ' + JSON.stringify(error));
+	}, {
+		frequency: 100
 	});
 }, false);
 	</script>
