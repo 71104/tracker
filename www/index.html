@@ -25,7 +25,7 @@
 		</div>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">Accelerometer</div>
+		<div class="panel-heading">Accelerometer <button id="accelerometer-options-button" class="btn btn-default">Options...</button></div>
 		<div class="panel-body">
 			<pre id="accelerometer">-</pre>
 		</div>
@@ -46,6 +46,23 @@
 		<div class="panel-heading">Position</div>
 		<div class="panel-body">
 			<pre id="position">-</pre>
+		</div>
+	</div>
+	<div class="modal fade" id="accelerometer-options" tabindex="-1" role="dialog" aria-labelledby="accelerometer-options-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="accelerometer-options-label">Accelerometer</h4>
+				</div>
+				<div class="modal-body">
+					<label>Frequency: <input id="accelerometer-frequency-field" type="number"/></label>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button class="btn btn-primary">Save</button>
+				</div>
+			</div>
 		</div>
 	</div>
 	<script src="phonegap.js"></script>
@@ -92,41 +109,77 @@ document.addEventListener('deviceready', function () {
 
 	reset();
 
-	navigator.accelerometer.watchAcceleration(function (newAcceleration) {
-		if (acceleration) {
+	function watchAcceleration(frequency) {
+		function clearDisplays() {
+			accelerometerDisplay.text('-');
+			accelerationDisplay.text('-');
+			velocityDisplay.text('-');
+			positionDisplay.text('-');
+		}
+
+		function updateDisplays(newAcceleration) {
+			accelerometerDisplay.text('x: ' + newAcceleration.x + '\ny: ' + newAcceleration.y + '\nz: ' + newAcceleration.z);
+			accelerationDisplay.text('x: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
+			velocityDisplay.text('x: ' + velocity.x + '\ny: ' + velocity.y + '\nz: ' + velocity.z);
+			positionDisplay.text('x: ' + position.x + '\ny: ' + position.y + '\nz: ' + position.z);
+		}
+
+		function store(newAcceleration) {
+			acceleration = newAcceleration;
+			updateDisplays(newAcceleration);
+		}
+
+		function step(newAcceleration) {
 			var dt = newAcceleration.timestamp - acceleration.timestamp;
 			acceleration.x = (newAcceleration.x - acceleration.x) / dt;
 			acceleration.y = (newAcceleration.y - acceleration.y) / dt;
 			acceleration.z = (newAcceleration.z - acceleration.z) / dt;
-		} else {
-			acceleration = newAcceleration;
+			var h = Math.sqrt(
+				acceleration.x * acceleration.x +
+				acceleration.y * acceleration.y +
+				acceleration.z * acceleration.z
+				) - 9.807;
+			acceleration.x *= h;
+			acceleration.y *= h;
+			acceleration.z *= h;
+			velocity.x += acceleration.x;
+			velocity.y += acceleration.y;
+			velocity.z += acceleration.z;
+			position.x += velocity.x;
+			position.y += velocity.y;
+			position.z += velocity.z;
+			updateDisplays(newAcceleration);
 		}
-		var h = Math.sqrt(
-			acceleration.x * acceleration.x + 
-			acceleration.y * acceleration.y + 
-			acceleration.z * acceleration.z
-			) - 9.82;
-		acceleration.x = Math.round(acceleration.x * h * 10) / 10;
-		acceleration.y = Math.round(acceleration.y * h * 10) / 10;
-		acceleration.z = Math.round(acceleration.z * h * 10) / 10;
-		velocity.x += acceleration.x;
-		velocity.y += acceleration.y;
-		velocity.z += acceleration.z;
-		position.x += velocity.x;
-		position.y += velocity.y;
-		position.z += velocity.z;
-		accelerometerDisplay.text('x: ' + newAcceleration.x + '\ny: ' + newAcceleration.y + '\nz: ' + newAcceleration.z);
-		accelerationDisplay.text('x: ' + acceleration.x + '\ny: ' + acceleration.y + '\nz: ' + acceleration.z);
-		velocityDisplay.text('x: ' + velocity.x + '\ny: ' + velocity.y + '\nz: ' + velocity.z);
-		positionDisplay.text('x: ' + position.x + '\ny: ' + position.y + '\nz: ' + position.z);
-	}, function (error) {
-		reset();
-		accelerometerDisplay.text('error: ' + JSON.stringify(error));
-		accelerationDisplay.text('error');
-		velocityDisplay.text('error');
-		positionDisplay.text('error');
-	}, {
-		frequency: 1000
+
+		var id = navigator.accelerometer.watchAcceleration(function (newAcceleration) {
+			if (acceleration) {
+				step(newAcceleration);
+			} else {
+				store(newAcceleration);
+			}
+		}, function (error) {
+			reset();
+			accelerometerDisplay.text('error: ' + JSON.stringify(error));
+			accelerationDisplay.text('error');
+			velocityDisplay.text('error');
+			positionDisplay.text('error');
+		}, {
+			frequency: frequency
+		});
+
+		return function () {
+			navigator.accelerometer.clearWatch(id);
+			reset();
+			clearDisplays();
+		};
+	}
+
+	var frequency = 1000;
+	var unwatch = watchAcceleration(frequency);
+
+	$('#accelerometer-options-button').click(function () {
+		$('#accelerometer-frequency-field').val(frequency);
+		$('#accelerometer-options').modal();
 	});
 }, false);
 	</script>
